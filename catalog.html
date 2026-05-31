@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumo — Каталог</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/fixel-display">
+    
+    <style>
+        :root {
+            --coral: #7D2826;
+            --candle: #EFE9D7;
+            --leaf: #898861;
+            --juniper: #343723;
+            --white: #ffffff;
+            --radius: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--candle);
+            color: var(--juniper);
+            font-family: 'Fixel Display', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 700;
+        }
+
+        header {
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond';
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--juniper);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .logo img {
+            height: 35px; 
+            display: block;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropbtn {
+            text-decoration: none;
+            color: var(--juniper);
+            text-transform: uppercase;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            padding: 15px 20px;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .dropdown:hover .dropbtn {
+            color: var(--coral);
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--white);
+            min-width: 180px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            border-radius: 0 0 10px 10px;
+            z-index: 1;
+            padding: 10px 0;
+        }
+
+        .dropdown-content a {
+            color: var(--juniper);
+            padding: 10px 20px;
+            text-decoration: none;
+            display: block;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .dropdown-content a:hover {
+            background-color: var(--candle);
+            color: var(--coral);
+            padding-left: 25px;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .burger-menu {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 22px;
+            height: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1100;
+        }
+
+        .burger-menu .bar {
+            height: 2px;
+            width: 100%;
+            background-color: var(--juniper);
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .icon-link {
+            color: var(--juniper);
+            text-decoration: none;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .icon-link:hover {
+            color: var(--coral);
+            transform: scale(1.15);
+        }
+
+        .breadcrumbs {
+            padding: 30px 5% 0;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .breadcrumbs a {
+            color: var(--juniper);
+            text-decoration: none;
+            opacity: 0.5;
+            transition: 0.2s;
+        }
+
+        .breadcrumbs a:hover {
+            opacity: 1;
+            color: var(--coral);
+        }
+
+        .breadcrumbs span {
+            color: var(--coral);
+            margin-left: 5px;
+        }
+
+        .catalog-header {
+            padding: 30px 5% 20px;
+            text-align: center;
+        }
+
+        .catalog-header h1 {
+            font-size: clamp(2.5rem, 5vw, 3.8rem);
+            margin-bottom: 15px;
+            color: var(--juniper);
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            padding: 20px 5% 80px;
+        }
+
+        .category-card {
+            position: relative;
+            height: 550px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            text-decoration: none;
+            display: flex;
+            align-items: flex-end;
+            padding: 40px;
+            transition: 0.4s ease;
+        }
+
+        .cat-sylyanky { 
+            background: linear-gradient(to top, rgba(52, 55, 35, 0.75), transparent 60%), 
+            url('images/IMG_5.jpeg') center/cover; 
+        }
+
+        .cat-gerdany { 
+            background: linear-gradient(to top, rgba(52, 55, 35, 0.75), transparent 60%), 
+            url('images/IMG_6.jpeg') center/cover; 
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(52, 55, 35, 0.2);
+        }
+
+        .category-card h2 {
+            color: var(--white);
+            font-size: 38px;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .category-card .view-more {
+            position: absolute;
+            right: 40px;
+            bottom: 45px;
+            color: var(--white);
+            font-size: 20px;
+            transition: 0.3s ease;
+        }
+
+        .category-card:hover .view-more {
+            transform: translateX(10px);
+            color: var(--candle);
+        }
+
+        footer {
+            background: var(--juniper);
+            color: var(--candle);
+            padding: 80px 5% 40px;
+            border-radius: var(--radius) var(--radius) 0 0;
+            margin-top: 60px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-col h4 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: var(--white);
+        }
+
+        .footer-col ul { list-style: none; }
+        
+        .footer-col ul li { margin-bottom: 12px; }
+
+        .footer-col ul li a {
+            color: var(--candle);
+            text-decoration: none;
+            font-size: 14px;
+            opacity: 0.8;
+            transition: 0.3s;
+        }
+
+        .footer-col ul li a:hover { 
+            opacity: 1; 
+            color: var(--coral); 
+        }
+
+        .social-links { display: flex; gap: 15px; margin-top: 20px; }
+        .social-links a { color: var(--candle); font-size: 20px; opacity: 0.8; }
+
+        @media (max-width: 768px) {
+            header {
+                justify-content: space-between; 
+                padding: 10px 5%;
+            }
+
+            .nav-links { 
+                display: flex;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                flex-direction: column;
+                gap: 0;
+                align-items: stretch;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+                border-top: 1px solid rgba(52, 55, 35, 0.05);
+                
+                max-height: 0;
+                opacity: 0;
+                overflow: hidden;
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            .nav-links.active {
+                max-height: 400px; 
+                opacity: 1;
+            }
+
+            .icons {
+                display: flex;
+                align-items: center;
+                gap: 15px; 
+                order: 2;
+            }
+
+            .icon-link {
+                font-size: 16px;
+            }
+
+            .burger-menu {
+                display: flex;
+                width: 22px;
+                height: 16px;
+                padding: 0;
+                cursor: pointer;
+                background: none;
+                border: none;
+                flex-direction: column;
+                justify-content: space-between;
+                z-index: 1001;
+            }
+
+            .burger-menu .bar {
+                height: 2px;
+                width: 100%;
+                background-color: var(--juniper);
+                border-radius: 2px;
+                transition: 0.3s ease;
+            }
+
+            .dropdown {
+                width: 100%;
+            }
+
+            .dropbtn {
+                padding: 15px 5%;
+                width: 100%;
+                border-bottom: 1px solid rgba(52, 55, 35, 0.03);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .dropdown-content {
+                position: static;
+                width: 100%;
+                box-shadow: none;
+                background-color: rgba(239, 233, 215, 0.3); 
+                padding: 0;
+                border-radius: 0;
+            }
+
+            .dropdown:hover .dropdown-content {
+                display: block;
+            }
+
+            .dropdown-content a {
+                padding: 12px 8%;
+            }
+
+            .category-grid { grid-template-columns: 1fr; }
+            .category-card { height: 420px; padding: 30px; }
+            .category-card h2 { font-size: 30px; }
+            .category-card .view-more { right: 30px; bottom: 35px; }
+
+            .burger-menu.active .bar:nth-child(1) {
+                transform: translateY(7px) rotate(45deg);
+                background-color: var(--coral);
+            }
+            .burger-menu.active .bar:nth-child(2) {
+                opacity: 0;
+            }
+            .burger-menu.active .bar:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg);
+                background-color: var(--coral);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">
+        <img src="images/logo2.svg" alt="LUMO" style="color: var(--juniper);">
+    </a>
+    <nav class="nav-links" id="navLinks">
+        <div class="dropdown">
+            <a href="catalog.html" class="dropbtn" style="color: var(--coral);">Каталог <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="sylyanky.html">Силянки</a>
+                <a href="gerdany.html">Ґердани</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Про нас <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="#">Бренд</a>
+                <a href="#">Матеріали</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Покупцеві <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="#">Доставка</a>
+                <a href="#">Оплата</a>
+                <a href="#">Контакти</a>
+            </div>
+        </div>
+    </nav>
+    <div class="icons">
+        <a href="#" class="icon-link"><i class="fa-regular fa-user"></i></a>
+        <a href="cart-empty.html" class="icon-link"><i class="fa-solid fa-bag-shopping"></i></a>
+        
+        <button class="burger-menu" id="burgerToggle" aria-label="Відкрити меню">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </div>
+</header>
+
+<main>
+    <nav class="breadcrumbs">
+        <a href="index.html">Головна</a> / <span>Каталог</span>
+    </nav>
+
+    <section class="catalog-header">
+        <h1>Наші колекції</h1>
+        <p style="max-width: 600px; margin: 0 auto; opacity: 0.8; font-size: 18px; font-weight: 500;">Оберіть категорію, щоб знайти свою ідеальну прикрасу, яка підкреслить вашу індивідуальність</p>
+    </section>
+
+    <section class="category-grid">
+        <a href="sylyanky.html" class="category-card cat-sylyanky">
+            <h2>Силянки</h2>
+            <div class="view-more"><i class="fa-solid fa-arrow-right"></i></div>
+        </a>
+
+        <a href="gerdany.html" class="category-card cat-gerdany">
+            <h2>Ґердани</h2>
+            <div class="view-more"><i class="fa-solid fa-arrow-right"></i></div>
+        </a>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <a href="index.html" class="logo" style="margin-bottom: 20px; display: block;">
+                <img src="images/logo2.svg" alt="LUMO" style="filter: brightness(0) invert(1); height: 35px;">
+            </a>
+            <p style="font-size: 14px; opacity: 0.7;">Сучасні прикраси з українською душею.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Розділи</h4>
+            <ul>
+                <li><a href="catalog.html">Каталог</a></li>
+                <li><a href="#">Про нас</a></li>
+                <li><a href="#">Покупцеві</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Категорії</h4>
+            <ul>
+                <li><a href="sylyanky.html">Силянки</a></li>
+                <li><a href="gerdany.html">Ґердани</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Контакти</h4>
+            <p style="font-size: 14px; opacity: 0.7;">+38 (097) 123 45 67</p>
+            <div class="social-links">
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+        </div>
+    </div>
+    
+    <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; text-align: center; font-size: 12px; opacity: 0.5; margin-top: 40px;">
+        &copy; 2026 LUMO. ВСІ ПРАВА ЗАХИЩЕНО. СТВОРЕНО У НАВЧАЛЬНИХ ЦІЛЯХ.
+    </div>
+</footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const burgerToggle = document.getElementById("burgerToggle");
+        const navLinks = document.getElementById("navLinks");
+
+        burgerToggle.addEventListener("click", function(e) {
+            e.stopPropagation();
+            burgerToggle.classList.toggle("active");
+            navLinks.classList.toggle("active");
+        });
+
+        const menuItems = navLinks.querySelectorAll("a");
+        menuItems.forEach(item => {
+            item.addEventListener("click", function() {
+                if (window.innerWidth <= 768 && !item.classList.contains('dropbtn')) {
+                    burgerToggle.classList.remove("active");
+                    navLinks.classList.remove("active");
+                }
+            });
+        });
+
+        document.addEventListener("click", function(event) {
+            if (!burgerToggle.contains(event.target) && !navLinks.contains(event.target)) {
+                burgerToggle.classList.remove("active");
+                navLinks.classList.remove("active");
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

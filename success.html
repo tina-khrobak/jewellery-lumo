@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumo — Вікно успіху</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/fixel-display">
+    
+    <style>
+        :root {
+            --coral: #7D2826;
+            --candle: #EFE9D7;
+            --leaf: #898861;
+            --juniper: #343723;
+            --white: #ffffff;
+            --radius: 20px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            background-color: var(--candle); 
+            color: var(--juniper); 
+            font-family: 'Fixel Display', sans-serif; 
+            line-height: 1.6; 
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; font-weight: 700; }
+
+        header {
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+        .logo img {
+            height: 35px;
+            display: block;
+        }
+        .nav-links { display: flex; align-items: center; gap: 10px; }
+        .dropdown { position: relative; display: inline-block; }
+        .dropbtn {
+            text-decoration: none;
+            color: var(--juniper);
+            text-transform: uppercase;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            padding: 15px 20px;
+            display: block;
+            transition: all 0.4s ease;
+        }
+        .dropdown:hover .dropbtn { color: var(--coral); }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--white);
+            min-width: 180px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            border-radius: 0 0 10px 10px;
+            z-index: 10;
+            padding: 10px 0;
+        }
+        .dropdown-content a {
+            color: var(--juniper);
+            padding: 10px 20px;
+            text-decoration: none;
+            display: block;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+        .dropdown-content a:hover {
+            background-color: var(--candle);
+            color: var(--coral);
+            padding-left: 25px;
+        }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        .burger-menu {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 22px;
+            height: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1100;
+        }
+        .burger-menu .bar {
+            height: 2px;
+            width: 100%;
+            background-color: var(--juniper);
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .icons { display: flex; gap: 20px; align-items: center; }
+        .icon-link { color: var(--juniper); font-size: 18px; text-decoration: none; transition: 0.3s; }
+        .icon-link:hover { color: var(--coral); transform: scale(1.15); }
+
+        .success-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 5%;
+        }
+        .success-card {
+            background: var(--white);
+            padding: 60px 40px;
+            border-radius: var(--radius);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(52, 55, 35, 0.05);
+        }
+        .success-icon {
+            font-size: 26px;
+            color: var(--leaf);
+            background: none;
+            border: 1px solid rgba(137, 136, 97, 0.4);
+            width: 70px;
+            height: 70px;
+            line-height: 68px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-bottom: 30px;
+        }
+        .success-card h1 { font-size: 42px; margin-bottom: 20px; color: var(--juniper); }
+        .order-id { font-weight: 700; color: var(--coral); font-size: 18px; margin-bottom: 25px; font-family: 'Fixel Display', sans-serif; }
+        .success-card p { opacity: 0.7; font-size: 15px; margin-bottom: 40px; max-width: 440px; margin-left: auto; margin-right: auto; line-height: 1.5; }
+
+        .home-btn {
+            display: inline-block;
+            background: var(--coral);
+            color: var(--white);
+            text-decoration: none;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-family: 'Fixel Display', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+            transition: all 0.4s ease;
+        }
+        .home-btn:hover {
+            background: #5a1d1b;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(125, 40, 38, 0.25);
+        }
+
+        footer {
+            background: var(--juniper);
+            color: var(--candle);
+            padding: 80px 5% 40px;
+            border-radius: var(--radius) var(--radius) 0 0;
+            margin-top: 60px;
+        }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 60px; }
+        .footer-col h4 { font-size: 22px; margin-bottom: 20px; color: var(--white); }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: var(--candle); text-decoration: none; font-size: 14px; opacity: 0.8; transition: 0.3s; }
+        .footer-col ul li a:hover { opacity: 1; color: var(--coral); }
+        .social-links { display: flex; gap: 15px; margin-top: 20px; }
+        .social-links a { color: var(--candle); font-size: 20px; opacity: 0.8; transition: 0.3s; }
+        .social-links a:hover { color: var(--coral); transform: translateY(-3px); }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; text-align: center; font-size: 12px; opacity: 0.5; margin-top: 40px; }
+
+        @media (max-width: 768px) {
+            header { padding: 10px 5%; }
+            .nav-links { 
+                display: flex;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                flex-direction: column;
+                gap: 0;
+                align-items: stretch;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+                border-top: 1px solid rgba(52, 55, 35, 0.05);
+                max-height: 0;
+                opacity: 0;
+                overflow: hidden;
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 999;
+            }
+            .nav-links.active { max-height: 400px; opacity: 1; }
+            .icons { gap: 15px; order: 2; }
+            .icon-link { font-size: 16px; }
+            .burger-menu { display: flex; z-index: 1001; }
+            .dropdown { width: 100%; }
+            .dropbtn {
+                padding: 15px 5%;
+                width: 100%;
+                border-bottom: 1px solid rgba(52, 55, 35, 0.03);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .dropdown-content {
+                position: static;
+                width: 100%;
+                box-shadow: none;
+                background-color: rgba(239, 233, 215, 0.3); 
+                padding: 0;
+                border-radius: 0;
+            }
+            .dropdown-content a { padding: 12px 8%; }
+            .burger-menu.active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); background-color: var(--coral); }
+            .burger-menu.active .bar:nth-child(2) { opacity: 0; }
+            .burger-menu.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background-color: var(--coral); }
+            
+            .success-card { padding: 40px 20px; }
+            .success-card h1 { font-size: 32px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">
+        <img src="images/logo2.svg" alt="LUMO">
+    </a>
+    <nav class="nav-links" id="navLinks">
+        <div class="dropdown">
+            <a href="catalog.html" class="dropbtn">Каталог <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="sylyanky.html">Силянки</a>
+                <a href="gerdany.html">Ґердани</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Про нас <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="#">Бренд</a>
+                <a href="#">Матеріали</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Покупцеві <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="#">Доставка</a>
+                <a href="#">Оплата</a>
+                <a href="#">Контакти</a>
+            </div>
+        </div>
+    </nav>
+    <div class="icons">
+        <a href="#" class="icon-link"><i class="fa-regular fa-user"></i></a>
+        <a href="cart-empty.html" class="icon-link"><i class="fa-solid fa-bag-shopping"></i></a>
+        
+        <button class="burger-menu" id="burgerToggle" aria-label="Відкрити меню">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </div>
+</header>
+
+<main class="success-main">
+    <div class="success-card">
+        <div class="success-icon">
+            <i class="fa-solid fa-check"></i> </div>
+        <h1>Дякуємо за замовлення!</h1>
+        <p class="order-id">№ 2026-0414</p>
+        <p>Ми вже отримали ваші дані та готуємо прикрасу. Очікуйте повідомлення про доставку найближчим часом.</p>
+        
+        <a href="index.html" class="home-btn">Повернутися на головну</a>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <a href="index.html" class="logo" style="margin-bottom: 20px; display: block;">
+                <img src="images/logo2.svg" alt="LUMO" style="filter: brightness(0) invert(1); height: 35px;">
+            </a>
+            <p style="font-size: 14px; opacity: 0.7;">Сучасні прикраси з українською душею.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Розділи</h4>
+            <ul>
+                <li><a href="catalog.html">Каталог</a></li>
+                <li><a href="#">Про нас</a></li>
+                <li><a href="#">Покупцеві</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Категорії</h4>
+            <ul>
+                <li><a href="sylyanky.html">Силянки</a></li>
+                <li><a href="gerdany.html">Ґердани</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Контакти</h4>
+            <p style="font-size: 14px; opacity: 0.7;">+38 (097) 123 45 67</p>
+            <div class="social-links">
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        &copy; 2026 LUMO. ВСІ ПРАВА ЗАХИЩЕНО. СТВОРЕНО У НАВЧАЛЬНИХ ЦІЛЯХ.
+    </div>
+</footer>
+
+<script>
+    const burgerToggle = document.getElementById("burgerToggle");
+    const navLinks = document.getElementById("navLinks");
+
+    burgerToggle.addEventListener("click", function(e) {
+        e.stopPropagation();
+        burgerToggle.classList.toggle("active");
+        navLinks.classList.toggle("active");
+    });
+
+    const menuItems = navLinks.querySelectorAll("a");
+    menuItems.forEach(item => {
+        item.addEventListener("click", function() {
+            if (window.innerWidth <= 768 && !item.classList.contains('dropbtn')) {
+                burgerToggle.classList.remove("active");
+                navLinks.classList.remove("active");
+            }
+        });
+    });
+
+    document.addEventListener("click", function(event) {
+        if (!burgerToggle.contains(event.target) && !navLinks.contains(event.target)) {
+            burgerToggle.classList.remove("active");
+            navLinks.classList.remove("active");
+        }
+    });
+</script>
+
+</body>
+</html>

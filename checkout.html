@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumo — Оформлення замовлення</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/fixel-display">
+    
+    <style>
+        :root {
+            --coral: #7D2826;
+            --candle: #EFE9D7;
+            --leaf: #898861;
+            --juniper: #343723;
+            --white: #ffffff;
+            --radius: 20px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            background-color: var(--candle); 
+            color: var(--juniper); 
+            font-family: 'Fixel Display', sans-serif; 
+            line-height: 1.6; 
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; font-weight: 700; }
+
+        header {
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+        .logo img {
+            height: 35px;
+            display: block;
+        }
+        .nav-links { display: flex; align-items: center; gap: 10px; }
+        .dropdown { position: relative; display: inline-block; }
+        .dropbtn {
+            text-decoration: none;
+            color: var(--juniper);
+            text-transform: uppercase;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            padding: 15px 20px;
+            display: block;
+            transition: all 0.4s ease;
+        }
+        .dropdown:hover .dropbtn { color: var(--coral); }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--white);
+            min-width: 180px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            border-radius: 0 0 10px 10px;
+            z-index: 10;
+            padding: 10px 0;
+        }
+        .dropdown-content a {
+            color: var(--juniper);
+            padding: 10px 20px;
+            text-decoration: none;
+            display: block;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+        .dropdown-content a:hover {
+            background-color: var(--candle);
+            color: var(--coral);
+            padding-left: 25px;
+        }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        .burger-menu {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 22px;
+            height: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1100;
+        }
+        .burger-menu .bar {
+            height: 2px;
+            width: 100%;
+            background-color: var(--juniper);
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .icons { display: flex; gap: 20px; align-items: center; }
+        .icon-link { color: var(--juniper); font-size: 18px; text-decoration: none; transition: 0.3s; }
+        .icon-link:hover { color: var(--coral); transform: scale(1.15); }
+
+        .breadcrumb {
+            padding: 30px 5% 10px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .breadcrumb a { color: var(--juniper); text-decoration: none; opacity: 0.5; transition: 0.3s; }
+        .breadcrumb a:hover { opacity: 1; color: var(--coral); }
+        .breadcrumb span { color: var(--juniper); opacity: 0.5; margin-left: 5px; }
+        .breadcrumb span:last-child { color: var(--coral); opacity: 0.8; }
+
+        .checkout-wrapper { max-width: 1300px; margin: 0 auto 100px; padding: 0 5%; }
+        .checkout-layout { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; margin-top: 40px; }
+
+        .checkout-main-form { background: var(--white); padding: 40px; border-radius: var(--radius); }
+        .checkout-section { margin-bottom: 40px; }
+        .checkout-section h2 { font-size: 28px; margin-bottom: 25px; color: var(--juniper); }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+
+        input, select {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid rgba(52, 55, 35, 0.15);
+            border-radius: 12px;
+            font-family: 'Fixel Display';
+            font-size: 14px;
+            transition: 0.3s;
+            background-color: var(--white);
+            color: var(--juniper);
+        }
+        input::placeholder { color: var(--juniper); opacity: 0.3; }
+        input:focus, select:focus { outline: none; border-color: var(--coral); box-shadow: 0 0 0 4px rgba(125, 40, 38, 0.05); }
+
+        .order-summary-box {
+            background: var(--juniper);
+            color: var(--candle);
+            padding: 40px;
+            border-radius: var(--radius);
+            position: sticky;
+            top: 100px;
+        }
+
+        .mini-item { display: flex; gap: 20px; align-items: center; margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid rgba(239, 233, 215, 0.1); }
+        .mini-item img { width: 65px; height: 80px; object-fit: cover; border-radius: 10px; }
+        
+        .summary-total-line { margin-top: 25px; padding-top: 25px; border-top: 1px solid rgba(239, 233, 215, 0.1); font-size: 24px; font-weight: bold; display: flex; justify-content: space-between; color: var(--white); }
+
+        .confirm-btn {
+            display: block;
+            width: 100%;
+            background: var(--coral);
+            color: var(--white);
+            border: none;
+            padding: 20px;
+            border-radius: 15px;
+            font-family: 'Fixel Display', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: all 0.4s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .confirm-btn:hover {
+            background: #5a1d1b;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(125, 40, 38, 0.25);
+        }
+
+        footer {
+            background: var(--juniper);
+            color: var(--candle);
+            padding: 80px 5% 40px;
+            border-radius: var(--radius) var(--radius) 0 0;
+            margin-top: 100px;
+        }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 60px; }
+        .footer-col h4 { font-size: 22px; margin-bottom: 20px; color: var(--white); }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: var(--candle); text-decoration: none; font-size: 14px; opacity: 0.8; transition: 0.3s; }
+        .footer-col ul li a:hover { opacity: 1; color: var(--coral); }
+        .social-links { display: flex; gap: 15px; margin-top: 20px; }
+        .social-links a { color: var(--candle); font-size: 20px; opacity: 0.8; transition: 0.3s; }
+        .social-links a:hover { color: var(--coral); transform: translateY(-3px); }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; text-align: center; font-size: 12px; opacity: 0.5; margin-top: 40px; }
+
+        @media (max-width: 768px) {
+            header { padding: 10px 5%; }
+            .nav-links { 
+                display: flex;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                flex-direction: column;
+                gap: 0;
+                align-items: stretch;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+                border-top: 1px solid rgba(52, 55, 35, 0.05);
+                max-height: 0;
+                opacity: 0;
+                overflow: hidden;
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 999;
+            }
+            .nav-links.active { max-height: 400px; opacity: 1; }
+            .icons { gap: 15px; order: 2; }
+            .icon-link { font-size: 16px; }
+            .burger-menu { display: flex; z-index: 1001; }
+            .dropdown { width: 100%; }
+            .dropbtn {
+                padding: 15px 5%;
+                width: 100%;
+                border-bottom: 1px solid rgba(52, 55, 35, 0.03);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .dropdown-content {
+                position: static;
+                width: 100%;
+                box-shadow: none;
+                background-color: rgba(239, 233, 215, 0.3); 
+                padding: 0;
+                border-radius: 0;
+            }
+            .dropdown-content a { padding: 12px 8%; }
+            .burger-menu.active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); background-color: var(--coral); }
+            .burger-menu.active .bar:nth-child(2) { opacity: 0; }
+            .burger-menu.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background-color: var(--coral); }
+            
+            .form-row { grid-template-columns: 1fr; gap: 15px; margin-bottom: 15px; }
+            .checkout-main-form { padding: 25px; }
+        }
+
+        @media (max-width: 900px) { 
+            .checkout-layout { grid-template-columns: 1fr; gap: 30px; } 
+            .order-summary-box { position: static; padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">
+        <img src="images/logo2.svg" alt="LUMO">
+    </a>
+    <nav class="nav-links" id="navLinks">
+        <div class="dropdown">
+            <a href="catalog.html" class="dropbtn">Каталог <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="sylyanky.html">Силянки</a>
+                <a href="gerdany.html">Ґердани</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Про нас <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="#">Бренд</a>
+                <a href="#">Матеріали</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Покупцеві <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="#">Доставка</a>
+                <a href="#">Оплата</a>
+                <a href="#">Контакти</a>
+            </div>
+        </div>
+    </nav>
+    <div class="icons">
+        <a href="#" class="icon-link"><i class="fa-regular fa-user"></i></a>
+        <a href="cart.html" class="icon-link"><i class="fa-solid fa-bag-shopping"></i></a>
+        
+        <button class="burger-menu" id="burgerToggle" aria-label="Відкрити меню">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </div>
+</header>
+
+<nav class="breadcrumb">
+    <a href="index.html">Головна</a> / 
+    <a href="catalog.html">Каталог</a> / 
+    <a href="sylyanky.html" id="checkoutBreadcrumbCat">Силянки</a> / 
+    <a href="#" id="checkoutBreadcrumbProduct">Силянка</a> / 
+    <a href="cart.html">Кошик</a> / 
+    <span>Оформлення замовлення</span>
+</nav>
+
+<main class="checkout-wrapper">
+    <h1 style="font-size: 44px; margin-bottom: 20px; font-family: 'Cormorant Garamond', serif;">Оформлення замовлення</h1>
+    
+    <form id="orderForm" action="success.html" class="checkout-layout">
+        <div class="checkout-main-form">
+            <div class="checkout-section">
+                <h2>1. Контактні дані</h2>
+                <div class="form-row">
+                    <div><label>Ім'я</label><input type="text" placeholder="Олена" required></div>
+                    <div><label>Прізвище</label><input type="text" placeholder="Терещенко" required></div>
+                </div>
+                <div class="form-row">
+                    <div><label>Телефон</label><input type="tel" placeholder="+38 0__ ___ __ __" pattern="^\+?\d{10,13}$" title="Введіть коректний номер телефону" required></div>
+                    <div><label>Email</label><input type="email" placeholder="example@mail.com" required></div>
+                </div>
+            </div>
+
+            <div class="checkout-section">
+                <h2>2. Доставка</h2>
+                <div style="margin-bottom: 20px;">
+                    <label>Спосіб доставки</label>
+                    <select required>
+                        <option value="" disabled selected>Оберіть варіант</option>
+                        <option value="np_branch">Нова Пошта (Відділення)</option>
+                        <option value="np_postomat">Нова Пошта (Поштомат)</option>
+                        <option value="np_courier">Кур'єр Нової Пошти</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div><label>Місто</label><input type="text" placeholder="Львів" required></div>
+                    <div><label>Номер відділення / Адреса</label><input type="text" placeholder="№12" required></div>
+                </div>
+            </div>
+
+            <div class="checkout-section">
+                <h2>3. Оплата</h2>
+                <div>
+                    <label>Спосіб оплати</label>
+                    <select required>
+                        <option value="" disabled selected>Оберіть варіант</option>
+                        <option value="card">Оплата карткою (LiqPay)</option>
+                        <option value="cash">Післяплата (при отриманні)</option>
+                        <option value="apple_pay">Apple Pay / Google Pay</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <aside class="order-summary-box" id="checkoutSummaryBox">
+        </aside>
+    </form>
+</main>
+
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <a href="index.html" class="logo" style="margin-bottom: 20px; display: block;">
+                <img src="images/logo2.svg" alt="LUMO" style="filter: brightness(0) invert(1); height: 35px;">
+            </a>
+            <p style="font-size: 14px; opacity: 0.7;">Сучасні прикраси з українською душею.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Розділи</h4>
+            <ul>
+                <li><a href="catalog.html">Каталог</a></li>
+                <li><a href="#">Про нас</a></li>
+                <li><a href="#">Покупцеві</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Категорії</h4>
+            <ul>
+                <li><a href="sylyanky.html">Силянки</a></li>
+                <li><a href="gerdany.html">Ґердани</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Контакти</h4>
+            <p style="font-size: 14px; opacity: 0.7;">+38 (097) 123 45 67</p>
+            <div class="social-links">
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        &copy; 2026 LUMO. ВСІ ПРАВА ЗАХИЩЕНО. СТВОРЕНО У НАВЧАЛЬНИХ ЦІЛЯХ.
+    </div>
+</footer>
+
+<script>
+    const savedItem = localStorage.getItem('lumo_cart_item');
+    const summaryBox = document.getElementById('checkoutSummaryBox');
+
+    if (!savedItem || savedItem === "null" || savedItem === "undefined") {
+        window.location.href = "cart-empty.html";
+    } else {
+        const item = JSON.parse(savedItem);
+        
+        const quantity = item.quantity || 1;
+        const basePrice = parseInt(item.price) || 0;
+        const totalPrice = basePrice * quantity;
+
+        const itemName = (item.name || "").toLowerCase();
+        const itemSku = (item.sku || "").toUpperCase();
+
+        const isGerdan = itemName.includes("ґердан") || itemName.includes("gerdan") || itemSku.includes("GER");
+
+        const breadcrumbCat = document.getElementById('checkoutBreadcrumbCat');
+        if (breadcrumbCat) {
+            if (isGerdan) {
+                breadcrumbCat.textContent = "Ґердани";
+                breadcrumbCat.href = "gerdany.html";
+            } else {
+                breadcrumbCat.textContent = "Силянки";
+                breadcrumbCat.href = "sylyanky.html";
+            }
+        }
+
+        const breadcrumbLink = document.getElementById('checkoutBreadcrumbProduct');
+        if (breadcrumbLink) {
+            breadcrumbLink.textContent = item.name || "Прикраса";
+            breadcrumbLink.href = `product-page.html?id=${item.id !== undefined ? item.id : '0'}`;
+        }
+
+        summaryBox.innerHTML = `
+            <h3 style="font-family: 'Cormorant Garamond'; font-size: 28px; margin-bottom: 25px;">Твоє замовлення</h3>
+            
+            <div class="mini-item">
+                <img src="${item.img || 'images/IMG_7.jpeg'}" alt="${item.name || 'Силянка'}">
+                <div>
+                    <h4 style="color: white; font-size: 20px; font-family: 'Cormorant Garamond';">${item.name || 'Силянка'}</h4>
+                    <p style="opacity: 0.7; font-size: 14px;">${quantity} шт / ${basePrice.toLocaleString()} грн</p>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; opacity: 0.8; font-size: 15px;">
+                <span>Сума</span>
+                <span>${totalPrice.toLocaleString()} грн</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; opacity: 0.8; font-size: 15px;">
+                <span>Доставка</span>
+                <span>за тарифами пошти</span>
+            </div>
+
+            <div class="summary-total-line">
+                <span>Разом:</span>
+                <span>${totalPrice.toLocaleString()} грн</span>
+            </div>
+
+            <button type="submit" form="orderForm" class="confirm-btn">Підтвердити замовлення</button>
+            
+            <p style="font-size: 11px; text-align: center; margin-top: 20px; opacity: 0.5; color: var(--candle); line-height: 1.4;">
+                Натискаючи кнопку, ви погоджуєтесь з умовами публічної оферти
+            </p>
+        `;
+    }
+
+    const burgerToggle = document.getElementById("burgerToggle");
+    const navLinks = document.getElementById("navLinks");
+
+    burgerToggle.addEventListener("click", function(e) {
+        e.stopPropagation();
+        burgerToggle.classList.toggle("active");
+        navLinks.classList.toggle("active");
+    });
+
+    const menuItems = navLinks.querySelectorAll("a");
+    menuItems.forEach(item => {
+        item.addEventListener("click", function() {
+            if (window.innerWidth <= 768 && !item.classList.contains('dropbtn')) {
+                burgerToggle.classList.remove("active");
+                navLinks.classList.remove("active");
+            }
+        });
+    });
+
+    document.addEventListener("click", function(event) {
+        if (!burgerToggle.contains(event.target) && !navLinks.contains(event.target)) {
+            burgerToggle.classList.remove("active");
+            navLinks.classList.remove("active");
+        }
+    });
+
+    document.getElementById('orderForm').addEventListener('submit', function() {
+        localStorage.removeItem('lumo_cart_item');
+    });
+</script>
+
+</body>
+</html>

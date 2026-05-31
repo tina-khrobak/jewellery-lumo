@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumo — Ґердани</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/fixel-display">
+    
+    <style>
+        :root {
+            --coral: #7D2826;
+            --candle: #EFE9D7;
+            --leaf: #898861;
+            --juniper: #343723;
+            --white: #ffffff;
+            --radius: 20px;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--candle);
+            color: var(--juniper);
+            font-family: 'Fixel Display', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; font-weight: 700; }
+        
+        header {
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+        
+        .logo {
+            font-family: 'Cormorant Garamond';
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--juniper);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+        
+        .logo img {
+            height: 35px; 
+            display: block;
+        }
+        
+        .nav-links { display: flex; align-items: center; gap: 10px; }
+
+        .dropdown { position: relative; display: inline-block; }
+        
+        .dropbtn {
+            text-decoration: none;
+            color: var(--juniper);
+            text-transform: uppercase;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            padding: 15px 20px;
+            display: block;
+            transition: 0.3s;
+        }
+        
+        .dropdown:hover .dropbtn { color: var(--coral); }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--white);
+            min-width: 180px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            border-radius: 0 0 10px 10px;
+            z-index: 1;
+            padding: 10px 0;
+        }
+        
+        .dropdown-content a {
+            color: var(--juniper);
+            padding: 10px 20px;
+            text-decoration: none;
+            display: block;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+        
+        .dropdown-content a:hover { 
+            background-color: var(--candle); 
+            color: var(--coral); 
+            padding-left: 25px; 
+        }
+        
+        .dropdown:hover .dropdown-content { display: block; }
+
+        .burger-menu {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 22px;
+            height: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1100;
+        }
+
+        .burger-menu .bar {
+            height: 2px;
+            width: 100%;
+            background-color: var(--juniper);
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .icons { display: flex; gap: 20px; align-items: center; }
+        
+        .icon-link { 
+            color: var(--juniper); 
+            text-decoration: none; 
+            font-size: 18px; 
+            transition: 0.3s; 
+        }
+        
+        .icon-link:hover { color: var(--coral); transform: scale(1.15); }
+
+        .breadcrumbs {
+            padding: 30px 5% 0;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .breadcrumbs a {
+            color: var(--juniper);
+            text-decoration: none;
+            opacity: 0.5;
+            transition: 0.2s;
+        }
+
+        .breadcrumbs a:hover {
+            opacity: 1;
+            color: var(--coral);
+        }
+
+        .breadcrumbs span {
+            color: var(--coral);
+            margin-left: 5px;
+        }
+
+        .mobile-filter-toggle {
+            display: none;
+            background: var(--white);
+            color: var(--juniper);
+            border: 1px solid rgba(52, 55, 35, 0.15);
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-family: 'Fixel Display', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            gap: 8px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        .mobile-filter-toggle:hover {
+            background: var(--white);
+            border-color: var(--coral);
+            color: var(--coral);
+        }
+
+        .category-main h1 { 
+            font-size: clamp(2.5rem, 5vw, 3.8rem); 
+            margin-bottom: 30px; 
+            color: var(--juniper);
+        }
+
+        .category-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 40px;
+            padding: 20px 5% 100px;
+        }
+
+        .filters {
+            background: var(--white);
+            padding: 30px;
+            border-radius: var(--radius);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+            transition: max-height 0.4s ease, padding 0.4s ease, opacity 0.3s ease;
+        }
+
+        .filter-group { margin-bottom: 25px; }
+        
+        .filter-group h4 { 
+            font-family: 'Fixel Display', sans-serif;
+            font-size: 18px; 
+            font-weight: 600;
+            margin-bottom: 15px; 
+            color: var(--juniper);
+        }
+        
+        .filter-group label { 
+            display: flex; 
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px; 
+            font-size: 14px; 
+            font-weight: 500;
+            cursor: pointer; 
+        }
+        
+        .filter-group input[type="checkbox"] {
+            accent-color: var(--coral);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        
+        .btn-reset {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            background: transparent;
+            color: var(--juniper);
+            border: 1px solid var(--juniper);
+            border-radius: 15px;
+            font-family: 'Fixel Display', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.3s;
+            opacity: 0.6;
+        }
+
+        .btn-reset:hover { opacity: 1; background: var(--candle); border-color: var(--coral); color: var(--coral); }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: var(--white);
+            padding: 20px;
+            text-align: center;
+            border-radius: var(--radius);
+            transition: 0.4s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .product-card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 15px 30px rgba(52, 55, 35, 0.1); 
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 320px; 
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+
+        .product-card h3 { 
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(20px, 2vw, 26px); 
+            margin-bottom: 8px; 
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        .price { 
+            color: var(--leaf); 
+            font-weight: 600; 
+            font-size: 18px; 
+            margin-bottom: 12px; 
+        }
+        
+        .details-link { 
+            color: var(--coral); 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            font-size: 12px; 
+        }
+
+        footer {
+            background: var(--juniper);
+            color: var(--candle);
+            padding: 80px 5% 40px;
+            border-radius: var(--radius) var(--radius) 0 0;
+            margin-top: 60px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-col h4 { font-size: 22px; margin-bottom: 20px; color: var(--white); }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        
+        .footer-col ul li a { 
+            color: var(--candle); 
+            text-decoration: none; 
+            font-size: 14px; 
+            opacity: 0.8; 
+            transition: 0.3s; 
+        }
+        
+        .footer-col ul li a:hover { opacity: 1; color: var(--coral); }
+
+        .social-links { display: flex; gap: 15px; margin-top: 20px; }
+        .social-links a { color: var(--candle); font-size: 20px; opacity: 0.8; transition: 0.3s; }
+        .social-links a:hover { opacity: 1; color: var(--coral); }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 5%;
+            }
+
+            .nav-links { 
+                display: flex;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                flex-direction: column;
+                gap: 0;
+                align-items: stretch;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+                border-top: 1px solid rgba(52, 55, 35, 0.05);
+                
+                max-height: 0;
+                opacity: 0;
+                overflow: hidden;
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 999;
+            }
+
+            .nav-links.active {
+                max-height: 400px; 
+                opacity: 1;
+            }
+
+            .icons {
+                gap: 15px; 
+                order: 2;
+            }
+
+            .icon-link { font-size: 16px; }
+
+            .burger-menu {
+                display: flex;
+                z-index: 1001;
+            }
+
+            .dropdown { width: 100%; }
+
+            .dropbtn {
+                padding: 15px 5%;
+                width: 100%;
+                border-bottom: 1px solid rgba(52, 55, 35, 0.03);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .dropdown-content {
+                position: static;
+                width: 100%;
+                box-shadow: none;
+                background-color: rgba(239, 233, 215, 0.3); 
+                padding: 0;
+                border-radius: 0;
+            }
+
+            .dropdown:hover .dropdown-content { display: block; }
+            .dropdown-content a { padding: 12px 8%; }
+
+            .burger-menu.active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); background-color: var(--coral); }
+            .burger-menu.active .bar:nth-child(2) { opacity: 0; }
+            .burger-menu.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background-color: var(--coral); }
+
+            .category-layout { 
+                grid-template-columns: 1fr; 
+                gap: 15px;
+                padding: 15px 4% 60px;
+            }
+
+            .mobile-filter-toggle {
+                display: flex; 
+            }
+
+            .filters { 
+                position: static; 
+                padding: 0;
+                max-height: 0;
+                opacity: 0;
+                overflow: hidden;
+                background: transparent;
+                border-radius: 0;
+                margin-bottom: 0;
+            }
+
+            .filters.active {
+                max-height: 1000px;
+                opacity: 1;
+                padding: 25px;
+                background: var(--white);
+                border-radius: var(--radius);
+                margin-bottom: 25px;
+                border: 1px solid rgba(52, 55, 35, 0.05);
+            }
+
+            .category-main h1 {
+                font-size: 28px;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+            .products-grid { 
+                grid-template-columns: repeat(2, minmax(140px, 1fr)); 
+                gap: 15px; 
+            }
+
+            .product-card { 
+                padding: 12px; 
+                border-radius: 15px;
+            }
+
+            .product-card img { 
+                height: 190px; 
+                border-radius: 10px;
+                margin-bottom: 10px;
+            }
+
+            .product-card h3 { 
+                font-size: 18px; 
+                margin-bottom: 5px;
+            }
+
+            .price { 
+                font-size: 15px; 
+                margin-bottom: 8px;
+            }
+
+            .details-link { 
+                font-size: 11px; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">
+        <img src="images/logo2.svg" alt="LUMO" style="color: var(--juniper);">
+    </a>
+    <nav class="nav-links" id="navLinks">
+        <div class="dropdown">
+            <a href="catalog.html" class="dropbtn" style="color: var(--coral);">Каталог <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="sylyanky.html">Силянки</a>
+                <a href="gerdany.html">Ґердани</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Про нас <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="#">Бренд</a>
+                <a href="#">Матеріали</a>
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Покупцеві <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="#">Доставка</a>
+                <a href="#">Оплата</a>
+                <a href="#">Контакти</a>
+            </div>
+        </div>
+    </nav>
+    <div class="icons">
+        <a href="#" class="icon-link"><i class="fa-regular fa-user"></i></a>
+        <a href="cart-empty.html" class="icon-link"><i class="fa-solid fa-bag-shopping"></i></a>
+        
+        <button class="burger-menu" id="burgerToggle" aria-label="Відкрити меню">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </div>
+</header>
+
+<nav class="breadcrumbs">
+    <a href="index.html">Головна</a> / <a href="catalog.html">Каталог</a> / <span>Ґердани</span>
+</nav>
+
+<div style="padding: 20px 5% 0;">
+    <button class="mobile-filter-toggle" id="mobileFilterToggle">
+        Фільтри <i class="fa-solid fa-sliders"></i>
+    </button>
+</div>
+
+<main class="category-layout">
+    <aside class="filters" id="filtersBlock">
+        <div class="filter-group">
+            <h4>Колір</h4>
+            <label><input type="checkbox" class="color-filter" value="червоний"> Червоний</label>
+            <label><input type="checkbox" class="color-filter" value="смарагдовий"> Смарагдовий</label>
+            <label><input type="checkbox" class="color-filter" value="чорний"> Чорний</label>
+            <label><input type="checkbox" class="color-filter" value="білий"> Білий</label>
+            <label><input type="checkbox" class="color-filter" value="синій"> Синій</label>
+        </div>
+        <div class="filter-group">
+            <h4>Ціна</h4>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; color: var(--juniper); opacity: 0.7;">
+                <span>500 грн</span>
+                <span id="priceValue">3000 грн</span>
+            </div>
+            <input type="range" id="priceRange" min="500" max="3000" step="50" value="3000" style="width: 100%; accent-color: var(--coral);">
+        </div>
+        <button class="btn-reset" id="resetBtn">Скинути фільтри</button>
+    </aside>
+
+    <section class="category-main">
+        <h1>Ґердани</h1>
+        <div class="products-grid" id="productsGrid"></div>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <a href="index.html" class="logo" style="margin-bottom: 20px; display: block;">
+                <img src="images/logo2.svg" alt="LUMO" style="filter: brightness(0) invert(1); height: 35px;">
+            </a>
+            <p style="font-size: 14px; opacity: 0.7;">Сучасні прикраси з українською душею.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Розділи</h4>
+            <ul>
+                <li><a href="catalog.html">Каталог</a></li>
+                <li><a href="#">Про нас</a></li>
+                <li><a href="#">Покупцеві</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Категорії</h4>
+            <ul>
+                <li><a href="sylyanky.html">Силянки</a></li>
+                <li><a href="gerdany.html">Ґердани</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Контакти</h4>
+            <p style="font-size: 14px; opacity: 0.7;">+38 (097) 123 45 67</p>
+            <div class="social-links">
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+        </div>
+    </div>
+    <div style="text-align: center; font-size: 12px; opacity: 0.5; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px;">
+        &copy; 2026 LUMO. ВСІ ПРАВА ЗАХИЩЕНО. СТВОРЕНО У НАВЧАЛЬНИХ ЦІЛЯХ.
+    </div>
+</footer>
+
+<script>
+    // Масив з унікальними id (g1, g2, g3, g4), щоб сторінка товару розпізнавала конкретний ґердан
+    const products = [
+        { id: 'g1', name: 'Ґердан "Світлиця"', price: 550, colors: ['червоний', 'білий'], img: 'images/IMG_16.jpeg' },
+        { id: 'g2', name: 'Ґердан "Ніч"', price: 850, colors: ['чорний'], img: 'images/IMG_17.jpeg' },
+        { id: 'g3', name: 'Ґердан "Оберіг"', price: 900, colors: ['червоний', 'білий'], img: 'images/IMG_18.jpeg' },
+        { id: 'g4', name: 'Ґердан "Червона рута"', price: 650, colors: ['червоний', 'білий'], img: 'images/IMG_3.jpeg' }
+    ];
+
+    const grid = document.getElementById('productsGrid');
+    const priceRange = document.getElementById('priceRange');
+    const priceValue = document.getElementById('priceValue');
+    const colorFilters = document.querySelectorAll('.color-filter');
+    const resetBtn = document.getElementById('resetBtn');
+    
+    const burgerToggle = document.getElementById("burgerToggle");
+    const navLinks = document.getElementById("navLinks");
+    const mobileFilterToggle = document.getElementById("mobileFilterToggle");
+    const filtersBlock = document.getElementById("filtersBlock");
+
+    // Функція рендерингу використовує статичний id об'єкта
+    function displayProducts(items) {
+        grid.innerHTML = items.map(item => `
+            <a href="product-page.html?id=${item.id}" class="product-card">
+                <img src="${item.img}" alt="${item.name}">
+                <h3>${item.name}</h3>
+                <p class="price">${item.price.toLocaleString()} грн</p>
+                <span class="details-link">Детальніше →</span>
+            </a>
+        `).join('');
+        
+        if(items.length === 0) {
+            grid.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 60px; background: #fff; border-radius: 20px; opacity: 0.6;">
+                    <i class="fa-solid fa-magnifying-glass" style="font-size: 30px; margin-bottom: 15px;"></i>
+                    <p>Товарів не знайдено за такими параметрами</p>
+                </div>`;
+        }
+    }
+
+    function applyFilters() {
+        const maxPrice = parseInt(priceRange.value);
+        priceValue.textContent = `${maxPrice} грн`;
+
+        const activeColors = Array.from(colorFilters)
+            .filter(input => input.checked)
+            .map(input => input.value);
+
+        const filtered = products.filter(product => {
+            const matchesPrice = product.price <= maxPrice;
+            const matchesColor = activeColors.length === 0 || 
+                                product.colors.some(c => activeColors.includes(c));
+            
+            return matchesPrice && matchesColor;
+        });
+
+        displayProducts(filtered);
+    }
+
+    priceRange.addEventListener('input', applyFilters);
+    colorFilters.forEach(filter => filter.addEventListener('change', applyFilters));
+
+    resetBtn.addEventListener('click', () => {
+        priceRange.value = 3000;
+        colorFilters.forEach(f => f.checked = false);
+        applyFilters();
+    });
+
+    burgerToggle.addEventListener("click", function(e) {
+        e.stopPropagation();
+        burgerToggle.classList.toggle("active");
+        navLinks.classList.toggle("active");
+    });
+
+    const menuItems = navLinks.querySelectorAll("a");
+    menuItems.forEach(item => {
+        item.addEventListener("click", function() {
+            if (window.innerWidth <= 768 && !item.classList.contains('dropbtn')) {
+                burgerToggle.classList.remove("active");
+                navLinks.classList.remove("active");
+            }
+        });
+    });
+
+    mobileFilterToggle.addEventListener("click", function() {
+        filtersBlock.classList.toggle("active");
+    });
+
+    document.addEventListener("click", function(event) {
+        if (!burgerToggle.contains(event.target) && !navLinks.contains(event.target)) {
+            burgerToggle.classList.remove("active");
+            navLinks.classList.remove("active");
+        }
+    });
+
+    displayProducts(products);
+</script>
+
+</body>
+</html>

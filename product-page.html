@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Lumo — Силянка</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/fixel-display">
+    
+    <style>
+        :root {
+            --coral: #7D2826;
+            --candle: #EFE9D7;
+            --leaf: #898861;
+            --juniper: #343723;
+            --white: #ffffff;
+            --radius: 20px;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: var(--candle);
+            color: var(--juniper);
+            font-family: 'Fixel Display', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 700;
+        }
+        
+        header {
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+        .logo img {
+            height: 35px;
+            display: block;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropbtn {
+            text-decoration: none;
+            color: var(--juniper);
+            text-transform: uppercase;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            padding: 15px 20px;
+            display: block;
+            transition: 0.3s;
+        }
+        .dropdown:hover .dropbtn {
+            color: var(--coral);
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--white);
+            min-width: 180px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            border-radius: 0 0 10px 10px;
+            z-index: 1;
+            padding: 10px 0;
+        }
+        .dropdown-content a {
+            color: var(--juniper);
+            padding: 10px 20px;
+            text-decoration: none;
+            display: block;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+        .dropdown-content a:hover {
+            background-color: var(--candle);
+            color: var(--coral);
+            padding-left: 25px;
+        }
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .burger-menu {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 22px;
+            height: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1100;
+        }
+        .burger-menu .bar {
+            height: 2px;
+            width: 100%;
+            background-color: var(--juniper);
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .icon-link {
+            color: var(--juniper);
+            text-decoration: none;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+        .icon-link:hover {
+            color: var(--coral);
+            transform: scale(1.15);
+        }
+
+        .breadcrumbs {
+            padding: 30px 5% 10px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .breadcrumbs a {
+            color: var(--juniper);
+            text-decoration: none;
+            opacity: 0.5;
+            transition: 0.2s;
+        }
+        .breadcrumbs a:hover {
+            opacity: 1;
+            color: var(--coral);
+        }
+        .breadcrumbs span {
+            color: var(--coral);
+            opacity: 0.8;
+            margin-left: 5px;
+        }
+
+        .product-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            padding: 20px 5% 60px;
+            align-items: start;
+        }
+        .product-gallery img {
+            width: 100%;
+            height: auto;
+            max-height: 650px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px rgba(52, 55, 35, 0.05);
+            display: block;
+        }
+        .product-info h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            line-height: 1.2;
+            color: var(--juniper);
+        }
+        .product-price {
+            font-size: 32px;
+            color: var(--leaf);
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+        .product-description {
+            margin-bottom: 40px;
+            font-size: 16px;
+            color: rgba(52, 55, 35, 0.8);
+            text-align: justify;
+        }
+        .product-meta {
+            margin-bottom: 40px;
+            border-top: 1px solid rgba(52, 55, 35, 0.1);
+            padding-top: 20px;
+        }
+        .product-meta p {
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        .product-meta strong {
+            color: var(--juniper);
+        }
+        .add-to-cart-btn {
+            display: block;
+            width: 100%;
+            padding: 22px;
+            background: var(--coral);
+            color: var(--white);
+            border: none;
+            border-radius: 15px;
+            font-family: 'Fixel Display', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-align: center;
+        }
+        .add-to-cart-btn:hover {
+            background: #5a1d1b;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(125, 40, 38, 0.3);
+        }
+
+        .related-products {
+            padding: 60px 5% 100px;
+        }
+        .related-products h2 {
+            font-size: 32px;
+            margin-bottom: 40px;
+            text-align: left;
+        }
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .small-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--radius);
+            text-decoration: none;
+            color: inherit;
+            transition: 0.4s ease;
+            text-align: center;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+        .small-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(52, 55, 35, 0.1);
+        }
+        .small-card img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        .small-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .small-card .price {
+            color: var(--leaf);
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        footer {
+            background: var(--juniper);
+            color: var(--candle);
+            padding: 80px 5% 40px;
+            border-radius: var(--radius) var(--radius) 0 0;
+            margin-top: 60px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        .footer-col h4 { font-size: 22px; margin-bottom: 20px; color: var(--white); }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: var(--candle); text-decoration: none; font-size: 14px; opacity: 0.8; transition: 0.3s; }
+        .footer-col ul li a:hover { opacity: 1; color: var(--coral); }
+
+        .social-links { display: flex; gap: 15px; margin-top: 20px; }
+        .social-links a { color: var(--candle); font-size: 20px; opacity: 0.8; transition: 0.3s; }
+        .social-links a:hover { opacity: 1; color: var(--coral); }
+
+        @media (max-width: 768px) {
+            header { padding: 10px 5%; }
+            .nav-links { 
+                display: flex;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                flex-direction: column;
+                gap: 0;
+                align-items: stretch;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+                border-top: 1px solid rgba(52, 55, 35, 0.05);
+                max-height: 0;
+                opacity: 0;
+                overflow: hidden;
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 999;
+            }
+            .nav-links.active { max-height: 400px; opacity: 1; }
+            .icons { gap: 15px; order: 2; }
+            .icon-link { font-size: 16px; }
+            .burger-menu { display: flex; z-index: 1001; }
+            .dropdown { width: 100%; }
+            .dropbtn {
+                padding: 15px 5%;
+                width: 100%;
+                border-bottom: 1px solid rgba(52, 55, 35, 0.03);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .dropdown-content {
+                position: static;
+                width: 100%;
+                box-shadow: none;
+                background-color: rgba(239, 233, 215, 0.3); 
+                padding: 0;
+                border-radius: 0;
+            }
+            .dropdown-content a { padding: 12px 8%; }
+            .burger-menu.active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); background-color: var(--coral); }
+            .burger-menu.active .bar:nth-child(2) { opacity: 0; }
+            .burger-menu.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background-color: var(--coral); }
+
+            .product-container { grid-template-columns: 1fr; gap: 40px; padding: 10px 4% 40px; }
+            .product-info h1 { font-size: 32px; }
+            .product-price { font-size: 26px; margin-bottom: 20px; }
+            .related-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        }
+        @media (max-width: 500px) {
+            .related-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">
+        <img src="images/logo2.svg" alt="LUMO">
+    </a>
+    <nav class="nav-links" id="navLinks">
+        <div class="dropdown">
+            <a href="catalog.html" class="dropbtn">Каталог <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="sylyanky.html">Силянки</a>
+                <a href="gerdany.html">Ґердани</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Про нас <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="#">Бренд</a>
+                <a href="#">Матеріали</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Покупцеві <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="#">Доставка</a>
+                <a href="#">Оплата</a>
+                <a href="#">Контакти</a>
+            </div>
+        </div>
+    </nav>
+    <div class="icons">
+        <a href="#" class="icon-link"><i class="fa-regular fa-user"></i></a>
+        <a href="cart.html" class="icon-link"><i class="fa-solid fa-bag-shopping"></i></a>
+        
+        <button class="burger-menu" id="burgerToggle" aria-label="Відкрити меню">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </div>
+</header>
+
+<nav class="breadcrumbs">
+    <a href="index.html">Головна</a> / <a href="catalog.html">Каталог</a> / <a href="sylyanky.html">Силянки</a> / <span id="breadcrumbCurrent">Силянка</span>
+</nav>
+
+<main class="product-container">
+    <div class="product-gallery">
+        <img id="productImg" src="images/IMG_7.jpeg" alt="Силянка">
+    </div>
+
+    <div class="product-info">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <span style="font-size: 14px; opacity: 0.6; letter-spacing: 1px;" id="productSku">АРТИКУЛ: LUM-2026-SYL01</span>
+            <span style="background: #e7f3e8; color: #2e7d32; padding: 4px 12px; border-radius: 50px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">В наявності</span>
+        </div>
+
+        <h1 id="productName">Силянка</h1>
+        <p class="product-price" id="productPrice">0 грн</p>
+        
+        <div class="product-description" id="productDesc"></div>
+
+        <div class="product-meta">
+            <p><strong>Розміри:</strong> <span id="productSizes">довжина бісерної частини 39 см; width: 4,5 см.</span></p>
+            <p><strong>Матеріали:</strong> високоякісний чеський бісер, міцна нейлонова нитка.</p>
+            <p><strong>Застібка:</strong> <span id="productFastener">кругла металева застібка.</span></p>
+        </div>
+
+        <button id="addToCartBtn" class="add-to-cart-btn">Додати у кошик</button>
+    </div>
+</main>
+
+<section class="related-products">
+    <div style="max-width: 1400px; margin: 0 auto;"> 
+        <h2>Вам також може сподобатися</h2>
+        
+        <div class="related-grid">
+            <a href="product-page.html?id=4" class="small-card">
+                <img src="images/IMG_11.jpeg" alt="Силянка Калина">
+                <h3>Силянка "Калина"</h3>
+                <p class="price">850 грн</p>
+            </a>
+            <a href="product-page.html?id=2" class="small-card">
+                <img src="images/IMG_9.jpeg" alt="Силянка Едельвейс">
+                <h3>Силянка "Едельвейс"</h3>
+                <p class="price">950 грн</p>
+            </a>
+            <a href="product-page.html?id=6" class="small-card">
+                <img src="images/IMG_13.jpeg" alt="Силянка Мавка">
+                <h3>Силянка "Мавка"</h3>
+                <p class="price">850 грн</p>
+            </a>
+            <a href="product-page.html?id=3" class="small-card">
+                <img src="images/IMG_10.jpeg" alt="Силянка Традиція">
+                <h3>Силянка "Традиція"</h3>
+                <p class="price">1390 грн</p>
+            </a>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <a href="index.html" class="logo" style="margin-bottom: 20px; display: block;">
+                <img src="images/logo2.svg" alt="LUMO" style="filter: brightness(0) invert(1); height: 35px;">
+            </a>
+            <p style="font-size: 14px; opacity: 0.7;">Сучасні прикраси з українською душею.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Розділи</h4>
+            <ul>
+                <li><a href="catalog.html">Каталог</a></li>
+                <li><a href="#">Про нас</a></li>
+                <li><a href="#">Покупцеві</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Категорії</h4>
+            <ul>
+                <li><a href="sylyanky.html">Силянки</a></li>
+                <li><a href="gerdany.html">Ґердани</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Контакти</h4>
+            <p style="font-size: 14px; opacity: 0.7;">+38 (097) 123 45 67</p>
+            <div class="social-links">
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+        </div>
+    </div>
+    
+    <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; text-align: center; font-size: 12px; opacity: 0.5; margin-top: 40px;">
+        &copy; 2026 LUMO. ВСІ ПРАВА ЗАХИЩЕНО. СТВОРЕНО У НАВЧАЛЬНИХ ЦІЛЯХ.
+    </div>
+</footer>
+
+<script>
+const productsData = {
+    // --- СИЛЯНКИ ---
+    '0': { sku: 'LUM-2026-SYL01', name: 'Силянка "Берегиня"', price: 1450, img: 'images/IMG_7.jpeg', sizes: 'довжина бісерної частини 40 см; ширина: 4,5 см.', fastener: 'застібка-карабін.', category: 'Силянки', catUrl: 'sylyanky.html', desc: 'Унікальна автентична прикраса, виконана у виразному червоному кольорі. Червоний колір здавна вважався потужним оберегом у традиційній українській культурі. Плетіння у вигляді витонченої геометричної сіточки чудово підкреслює лінію шиї.' },
+    '1': { sku: 'LUM-2026-SYL02', name: 'Силянка "Зоряна"', price: 1200, img: 'images/IMG_5.jpeg', sizes: 'довжина бісерної частини 39 см; ширина: 4,5 см.', fastener: 'кругла металева застібка.', category: 'Силянки', catUrl: 'sylyanky.html', desc: 'Традиційна шийна прикраса, виконана в глибокому монохромному чорному кольорі, що є сміливою та надзвичайно стильною інтерпретацією української етнокласики. Тип плетіння: ажурна сіточка (класичне силяння ромбами).' },
+    '2': { sku: 'LUM-2026-SYL03', name: 'Силянка "Едельвейс"', price: 950, img: 'images/IMG_9.jpeg', sizes: 'довжина бісерної частини 38 см; ширина: 4 см.', fastener: 'застібка-карабін.', category: 'Силянки', catUrl: 'sylyanky.html', desc: 'Світла, як гірські вершини, біла силянка уособлює чистоту та ніжність. Тонка ювелірна робота з чеського бісеру створює невагомий орнамент, що личитиме як до святкової вишиванки, так і до стриманого сучасного образу.' },
+    '3': { sku: 'LUM-2026-SYL04', name: 'Силянка "Традиція"', price: 1390, img: 'images/IMG_10.jpeg', sizes: 'довжина бісерної частини 34,5 см; ширина: 4 см.', fastener: 'текстильні шнурки-завʼязки.', category: 'Силянки', catUrl: 'sylyanky.html', desc: 'Глибока та насичена чорна основа цієї силянки поєднує в собі силу поколінь та сталість українських традицій. Бездоганна щільність силяння забезпечує ідеальну посадку прикраси та її довговічність.' },
+    '4': { sku: 'LUM-2026-SYL05', name: 'Силянка "Калина"', price: 850, img: 'images/IMG_11.jpeg', sizes: 'довжина бісерної частини 37 см; ширина: 3 см.', fastener: 'застібка-карабін.', category: 'Силянки', catUrl: 'sylyanky.html', desc: 'Яскрава силянка насиченого червоного кольору, натхненна символом української землі — калиною. Невелика, але дуже акцентна прикраса, здатна додати етнічного колориту будь-якому кежуал або класичному аутфіту.' },
+    '5': { sku: 'LUM-2026-SYL06', name: 'Силянка "Берегиня зелена"', price: 1450, img: 'images/IMG_12.jpeg', sizes: 'довжина бісерної частини 40 см; ширина: 4,5 см.', fastener: 'текстильні шнурки-завʼязки з китицями.', category: 'Силянки', catUrl: 'sylyanky.html', desc: 'Неймовірний смарагдовий колір цієї силянки заворожує з першого погляду. Шляхетний зелений відтінок символізує весняне оновлення, життя та природну красу. Орнамент виконано за стародавніми автентичними схемами.' },
+    '6': { sku: 'LUM-2026-SYL07', name: 'Силянка "Мавка"', price: 850, img: 'images/IMG_13.jpeg', sizes: 'довжина бісерної частини 39 см; ширина: 3 см.', fastener: 'кругла металева застібка.', category: 'Силянки', catUrl: 'sylyanky.html', desc: 'Ніжна силянка глибокого синього кольору, що нагадує вечірні карпатські сутінки або тихі лісові озера. Ажурні візерунки створюють легку, загадкову текстуру, яка чарівно переливається при сонячному світлі.' },
+    '7': { sku: 'LUM-2026-SYL08', name: 'Силянка "Роса"', price: 1590, img: 'images/IMG_14.jpeg', sizes: 'довжина бісерної частини 37 см; ширина: 6,5 см.', fastener: 'два варіанти застібки.', category: 'Силянки', catUrl: 'sylyanky.html', desc: 'Вишукана біла силянка преміальної якості. Використання особливого каліброваного бісеру створює враження, ніби прикраса зіткана з крихітних крапель ранкової роси. Дуже святковий та ошатний варіант.' },
+    '8': { sku: 'LUM-2026-SYL09', name: 'Силянка "Едельвейс червона"', price: 1100, img: 'images/IMG_15.jpeg', sizes: 'довжина бісерної частини 39 см; ширина: 5 см.', fastener: 'застібка-карабін.', category: 'Силянки', catUrl: 'sylyanky.html', desc: 'Енергійна червона варіація орнаменту "Едельвейс". Контрастні геометричні переплетення привертають увагу та несуть у собі сильний символізм вогню та життєвої сили. Надійна фурнітура гарантує зручне носіння.' },
+
+    // --- ҐЕРДАНИ ---
+    'g1': { sku: 'LUM-2026-GER01', name: 'Ґердан "Світлиця"', price: 550, img: 'images/IMG_16.jpeg', sizes: 'довжина 45 см; ширина: 5 см.', fastener: 'текстильні шнурки-завʼязки.', category: 'Ґердани', catUrl: 'gerdany.html', desc: 'Витончений ґердан ручної роботи. Геометричні орнаменти гармонійно поєднують минуле та сучасне.' },
+    'g2': { sku: 'LUM-2026-GER02', name: 'Ґердан "Ніч"', price: 850, img: 'images/IMG_17.jpeg', sizes: 'довжина 48 см; ширина: 6 см.', fastener: 'текстильні шнурки-завʼязки.', category: 'Ґердани', catUrl: 'gerdany.html', desc: 'Глибокий, темний та заворожуючий ґердан, що символізує велич карпатської ночі та таємничість орнаментів.' },
+    'g3': { sku: 'LUM-2026-GER03', name: 'Ґердан "Оберіг"', price: 900, img: 'images/IMG_18.jpeg', sizes: 'довжина 50 см; width: 6,5 см.', fastener: 'текстильні шнурки-завʼязки.', category: 'Ґердани', catUrl: 'gerdany.html', desc: 'Потужний родинний оберіг, вплетений у красиву бісерну стрічку. Кожен елемент має свій сакральний зміст.' },
+    'g4': { sku: 'LUM-2026-GER04', name: 'Ґердан "Червона рута"', price: 650, img: 'images/IMG_3.jpeg', sizes: 'довжина 46 см; ширина: 5,5 см.', fastener: 'текстильні шнурки-завʼязки.', category: 'Ґердани', catUrl: 'gerdany.html', desc: 'Яскрава етнічна прикраса з домінуванням насичених червоних та чорних ниток бісеру.' }
+};
+
+const urlParams = new URLSearchParams(window.location.search);
+const productId = urlParams.get('id') || '0'; 
+
+const product = productsData[productId] || productsData['0'];
+
+document.getElementById('pageTitle').textContent = `Lumo — ${product.name}`;
+document.getElementById('productImg').src = product.img;
+document.getElementById('productImg').alt = product.name;
+document.getElementById('productSku').textContent = `АРТИКУЛ: ${product.sku}`;
+document.getElementById('productName').textContent = product.name;
+document.getElementById('productPrice').textContent = `${product.price.toLocaleString()} грн`;
+document.getElementById('productDesc').innerHTML = `<p>${product.desc}</p>`;
+document.getElementById('productSizes').textContent = product.sizes;
+document.getElementById('productFastener').textContent = product.fastener;
+
+const breadcrumbCategory = document.querySelector('.breadcrumbs a[href="sylyanky.html"]');
+if (breadcrumbCategory) {
+    breadcrumbCategory.textContent = product.category;
+    breadcrumbCategory.href = product.catUrl;
+}
+document.getElementById('breadcrumbCurrent').textContent = product.name;
+
+document.getElementById('addToCartBtn').addEventListener('click', function() {
+    const cartItem = {
+        id: productId,
+        name: product.name,
+        price: product.price,
+        img: product.img,
+        sku: product.sku,
+        sizes: product.sizes
+    };
+    
+    localStorage.setItem('lumo_cart_item', JSON.stringify(cartItem));
+    window.location.href = 'cart.html';
+});
+
+const burgerToggle = document.getElementById("burgerToggle");
+const navLinks = document.getElementById("navLinks");
+
+burgerToggle.addEventListener("click", function(e) {
+    e.stopPropagation();
+    burgerToggle.classList.toggle("active");
+    navLinks.classList.toggle("active");
+});
+
+const menuItems = navLinks.querySelectorAll("a");
+menuItems.forEach(item => {
+    item.addEventListener("click", function() {
+        if (window.innerWidth <= 768 && !item.classList.contains('dropbtn')) {
+            burgerToggle.classList.remove("active");
+            navLinks.classList.remove("active");
+        }
+    });
+});
+
+document.addEventListener("click", function(event) {
+    if (!burgerToggle.contains(event.target) && !navLinks.contains(event.target)) {
+        burgerToggle.classList.remove("active");
+        navLinks.classList.remove("active");
+    }
+});
+</script>
+
+</body>
+</html>

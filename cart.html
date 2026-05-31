@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumo — Кошик</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/fixel-display">
+    
+    <style>
+        :root {
+            --coral: #7D2826;
+            --candle: #EFE9D7;
+            --leaf: #898861;
+            --juniper: #343723;
+            --white: #ffffff;
+            --radius: 20px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            background-color: var(--candle); 
+            color: var(--juniper); 
+            font-family: 'Fixel Display', sans-serif; 
+            line-height: 1.6; 
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4 { 
+            font-family: 'Cormorant Garamond', serif; 
+            font-weight: 700; 
+        }
+        
+        header {
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+        .logo img {
+            height: 35px;
+            display: block;
+        }
+
+        .nav-links { display: flex; align-items: center; gap: 10px; }
+        .dropdown { position: relative; display: inline-block; }
+        .dropbtn {
+            text-decoration: none;
+            color: var(--juniper);
+            text-transform: uppercase;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            padding: 15px 20px;
+            display: block;
+            transition: all 0.4s ease;
+        }
+        .dropdown:hover .dropbtn { color: var(--coral); }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--white);
+            min-width: 180px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+            border-radius: 0 0 10px 10px;
+            z-index: 10;
+            padding: 10px 0;
+        }
+        .dropdown-content a {
+            color: var(--juniper);
+            padding: 10px 20px;
+            text-decoration: none;
+            display: block;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+        .dropdown-content a:hover {
+            background-color: var(--candle);
+            color: var(--coral);
+            padding-left: 25px;
+        }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        .burger-menu {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 22px;
+            height: 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1100;
+        }
+        .burger-menu .bar {
+            height: 2px;
+            width: 100%;
+            background-color: var(--juniper);
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .icons { display: flex; gap: 20px; align-items: center; }
+        .icon-link { color: var(--juniper); font-size: 18px; text-decoration: none; transition: 0.3s; }
+        .icon-link:hover { color: var(--coral); transform: scale(1.15); }
+
+        .breadcrumb {
+            padding: 30px 5% 10px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .breadcrumb a { color: var(--juniper); text-decoration: none; opacity: 0.5; transition: 0.3s; }
+        .breadcrumb a:hover { opacity: 1; color: var(--coral); }
+        
+        .breadcrumb span { 
+            color: var(--juniper); 
+            opacity: 0.5; 
+            margin-left: 5px; 
+        }
+        .breadcrumb span:last-child { 
+            color: var(--coral); 
+            opacity: 0.8; 
+        }
+
+        .cart-container { padding: 20px 5% 80px; max-width: 1300px; margin: 0 auto; }
+        .cart-layout { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; align-items: start; }
+
+        .cart-items { background: var(--white); border-radius: var(--radius); padding: 40px; }
+        
+        .cart-item {
+            display: grid;
+            grid-template-columns: 100px 1fr auto;
+            gap: 30px;
+            align-items: center;
+        }
+        .cart-item img { 
+            width: 100px; 
+            height: 120px; 
+            object-fit: cover; 
+            border-radius: 12px; 
+        }
+
+        .item-info h3 { font-family: 'Cormorant Garamond', serif; font-size: 26px; margin-bottom: 6px; color: var(--juniper); }
+        .item-info p { font-size: 14px; opacity: 0.5; margin-bottom: 2px; }
+
+        .remove-btn { 
+            color: var(--coral); 
+            background: none; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 11px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px;
+            margin-top: 15px;
+            transition: 0.3s;
+            display: inline-block;
+        }
+        .remove-btn:hover { opacity: 0.7; }
+
+        .item-controls { 
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 15px;
+        }
+        .qty-box { display: flex; align-items: center; gap: 12px; border: 1px solid rgba(52, 55, 35, 0.2); padding: 4px 12px; border-radius: 50px; }
+        .qty-btn { 
+            background: none; 
+            border: none;
+            color: var(--juniper);
+            font-size: 16px;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.6;
+            transition: 0.3s;
+        }
+        .qty-btn:hover { opacity: 1; }
+        .qty-val { font-size: 14px; font-weight: 600; min-width: 15px; text-align: center; }
+        .item-price { font-weight: 600; font-size: 20px; color: var(--juniper); }
+
+        .cart-summary { 
+            background: var(--juniper); 
+            color: var(--candle); 
+            padding: 40px; 
+            border-radius: var(--radius); 
+        }
+        .cart-summary h2 { font-size: 28px; margin-bottom: 25px; border-bottom: 1px solid rgba(239, 233, 215, 0.1); padding-bottom: 15px; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 15px; opacity: 0.9; }
+        .summary-total { 
+            margin-top: 25px; 
+            border-top: 1px solid rgba(239, 233, 215, 0.1); 
+            padding-top: 20px; 
+            font-size: 24px; 
+            font-weight: bold; 
+            display: flex; 
+            justify-content: space-between; 
+            color: var(--white);
+        }
+
+        .checkout-btn, .continue-btn {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            border-radius: 15px;
+            font-family: 'Fixel Display', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            text-decoration: none;
+            font-size: 13px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border: none;
+            text-align: center;
+        }
+
+        .checkout-btn {
+            background: var(--coral);
+            color: var(--white);
+            margin-top: 30px;
+        }
+        .checkout-btn:hover {
+            background: #5a1d1b;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(125, 40, 38, 0.25);
+        }
+
+        .continue-btn {
+            background: transparent;
+            color: var(--candle);
+            border: 1px solid rgba(239, 233, 215, 0.4); 
+            margin-top: 15px;
+        }
+        .continue-btn:hover {
+            border-color: var(--white);
+            color: var(--white);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-3px);
+        }
+
+        footer {
+            background: var(--juniper);
+            color: var(--candle);
+            padding: 80px 5% 40px;
+            border-radius: var(--radius) var(--radius) 0 0;
+            margin-top: 100px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        .footer-col h4 { font-size: 22px; margin-bottom: 20px; color: var(--white); }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: var(--candle); text-decoration: none; font-size: 14px; opacity: 0.8; transition: 0.3s; }
+        .footer-col ul li a:hover { opacity: 1; color: var(--coral); }
+        
+        .social-links { display: flex; gap: 15px; margin-top: 20px; }
+        .social-links a { color: var(--candle); font-size: 20px; opacity: 0.8; transition: 0.3s; }
+        .social-links a:hover { color: var(--coral); transform: translateY(-3px); }
+
+        @media (max-width: 768px) {
+            header { padding: 10px 5%; }
+            .nav-links { 
+                display: flex;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--white);
+                flex-direction: column;
+                gap: 0;
+                align-items: stretch;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+                border-top: 1px solid rgba(52, 55, 35, 0.05);
+                max-height: 0;
+                opacity: 0;
+                overflow: hidden;
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 999;
+            }
+            .nav-links.active { max-height: 400px; opacity: 1; }
+            .icons { gap: 15px; order: 2; }
+            .icon-link { font-size: 16px; }
+            .burger-menu { display: flex; z-index: 1001; }
+            .dropdown { width: 100%; }
+            .dropbtn {
+                padding: 15px 5%;
+                width: 100%;
+                border-bottom: 1px solid rgba(52, 55, 35, 0.03);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .dropdown-content {
+                position: static;
+                width: 100%;
+                box-shadow: none;
+                background-color: rgba(239, 233, 215, 0.3); 
+                padding: 0;
+                border-radius: 0;
+            }
+            .dropdown-content a { padding: 12px 8%; }
+            .burger-menu.active .bar:nth-child(1) { transform: translateY(7px) rotate(45deg); background-color: var(--coral); }
+            .burger-menu.active .bar:nth-child(2) { opacity: 0; }
+            .burger-menu.active .bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background-color: var(--coral); }
+        }
+
+        @media (max-width: 900px) { 
+            .cart-layout { grid-template-columns: 1fr; gap: 30px; } 
+            .cart-items { padding: 25px; }
+        }
+        @media (max-width: 500px) {
+            .cart-item { grid-template-columns: 80px 1fr; gap: 20px; }
+            .item-controls { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; align-items: center; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">
+        <img src="images/logo2.svg" alt="LUMO">
+    </a>
+    <nav class="nav-links" id="navLinks">
+        <div class="dropdown">
+            <a href="catalog.html" class="dropbtn">Каталог <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="sylyanky.html">Силянки</a>
+                <a href="gerdany.html">Ґердани</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Про нас <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="#">Бренд</a>
+                <a href="#">Матеріали</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <a href="#" class="dropbtn">Покупцеві <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 5px;"></i></a>
+            <div class="dropdown-content">
+                <a href="#">Доставка</a>
+                <a href="#">Оплата</a>
+                <a href="#">Контакти</a>
+            </div>
+        </div>
+    </nav>
+    <div class="icons">
+        <a href="#" class="icon-link"><i class="fa-regular fa-user"></i></a>
+        <a href="cart.html" class="icon-link"><i class="fa-solid fa-bag-shopping"></i></a>
+        
+        <button class="burger-menu" id="burgerToggle" aria-label="Відкрити меню">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </div>
+</header>
+
+<nav class="breadcrumb">
+    <a href="index.html">Головна</a> / 
+    <a href="catalog.html">Каталог</a> / 
+    <a href="sylyanky.html" id="cartBreadcrumbCat">Силянки</a> / 
+    <a href="product-page.html" id="cartBreadcrumbProduct">Прикраса</a> / 
+    <span>Кошик</span>
+</nav>
+
+<main class="cart-container">
+    <h1 style="font-size: 44px; margin-bottom: 40px; font-family: 'Cormorant Garamond', serif;">Твій кошик</h1>
+    
+    <div class="cart-layout">
+        <div class="cart-items" id="cartItemsContainer">
+        </div>
+
+        <aside class="cart-summary">
+            <h2>Підсумок</h2>
+            <div class="summary-row">
+                <span id="summaryQtyText">Товари (0)</span>
+                <span id="summarySubtotal">0 грн</span>
+            </div>
+            <div class="summary-row">
+                <span>Доставка</span>
+                <span>за тарифами пошти</span>
+            </div>
+            <div class="summary-total">
+                <span>До сплати</span>
+                <span id="summaryTotal">0 грн</span>
+            </div>
+            
+            <a href="checkout.html" style="text-decoration: none;">
+                <button class="checkout-btn">Оформити замовлення</button>
+            </a>
+            <a href="catalog.html" class="continue-btn">Продовжити покупки</a>
+        </aside>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <a href="index.html" class="logo" style="margin-bottom: 20px; display: block;">
+                <img src="images/logo2.svg" alt="LUMO" style="filter: brightness(0) invert(1); height: 35px;">
+            </a>
+            <p style="font-size: 14px; opacity: 0.7;">Сучасні прикраси з українською душею.</p>
+        </div>
+        <div class="footer-col">
+            <h4>Розділи</h4>
+            <ul>
+                <li><a href="catalog.html">Каталог</a></li>
+                <li><a href="#">Про нас</a></li>
+                <li><a href="#">Покупцеві</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Категорії</h4>
+            <ul>
+                <li><a href="sylyanky.html">Силянки</a></li>
+                <li><a href="gerdany.html">Ґердани</a></li>
+            </ul>
+        </div>
+        <div class="footer-col">
+            <h4>Контакти</h4>
+            <p style="font-size: 14px; opacity: 0.7;">+38 (097) 123 45 67</p>
+            <div class="social-links">
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+        </div>
+    </div>
+    
+    <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; text-align: center; font-size: 12px; opacity: 0.5; margin-top: 40px;">
+        &copy; 2026 LUMO. ВСІ ПРАВА ЗАХИЩЕНО. СТВОРЕНО У НАВЧАЛЬНИХ ЦІЛЯХ.
+    </div>
+</footer>
+
+<script>
+    const savedItem = localStorage.getItem('lumo_cart_item');
+    const container = document.getElementById('cartItemsContainer');
+
+    if (!savedItem || savedItem === "null" || savedItem === "undefined") {
+        window.location.href = "cart-empty.html";
+    } else {
+        const item = JSON.parse(savedItem);
+        let quantity = item.quantity || 1;
+
+        const breadcrumbCat = document.getElementById('cartBreadcrumbCat');
+        const breadcrumbProd = document.getElementById('cartBreadcrumbProduct');
+
+        const isGerdan = (item.id && item.id.toString().startsWith('g')) || (item.sku && item.sku.includes('GER'));
+
+        if (isGerdan) {
+            breadcrumbCat.textContent = "Ґердани";
+            breadcrumbCat.href = "gerdany.html";
+        } else {
+            breadcrumbCat.textContent = "Силянки";
+            breadcrumbCat.href = "sylyanky.html";
+        }
+
+        breadcrumbProd.textContent = item.name || "Прикраса";
+        breadcrumbProd.href = `product-page.html?id=${item.id !== undefined ? item.id : '0'}`;
+
+        function updateCartTotals() {
+            const pricePerUnit = parseInt(item.price) || 0;
+            const currentPrice = pricePerUnit * quantity;
+            
+            const priceElement = document.getElementById('itemPrice');
+            if (priceElement) {
+                priceElement.textContent = `${currentPrice.toLocaleString()} грн`;
+            }
+            
+            document.getElementById('summaryQtyText').textContent = `Товари (${quantity})`;
+            document.getElementById('summarySubtotal').textContent = `${currentPrice.toLocaleString()} грн`;
+            document.getElementById('summaryTotal').textContent = `${currentPrice.toLocaleString()} грн`;
+
+            localStorage.setItem('lumo_cart_item', JSON.stringify({ ...item, quantity: quantity }));
+        }
+
+        let shortSize = "Стандартний";
+        if (item.sizes) {
+            shortSize = item.sizes.split(';')[0].replace('довжина бісерної частини ', '');
+        }
+
+        container.innerHTML = `
+            <div class="cart-item">
+                <img src="${item.img || 'images/IMG_7.jpeg'}" alt="${item.name || 'Силянка'}">
+                <div class="item-info">
+                    <h3>${item.name || 'Силянка'}</h3>
+                    <p>Артикул: ${item.sku || 'LUM-2026'}</p>
+                    <p>Розмір: ${shortSize}</p>
+                    <button class="remove-btn" id="removeItemBtn">Видалити</button>
+                </div>
+                <div class="item-controls">
+                    <div class="qty-box">
+                        <button class="qty-btn" id="minusBtn">-</button>
+                        <span class="qty-val" id="qtyValue">${quantity}</span>
+                        <button class="qty-btn" id="plusBtn">+</button>
+                    </div>
+                    <p class="item-price" id="itemPrice">0 грн</p>
+                </div>
+            </div>
+        `;
+
+        updateCartTotals();
+
+        document.getElementById('plusBtn').addEventListener('click', () => {
+            quantity++;
+            document.getElementById('qtyValue').textContent = quantity;
+            updateCartTotals(); 
+        });
+
+        document.getElementById('minusBtn').addEventListener('click', () => {
+            if (quantity > 1) {
+                quantity--;
+                document.getElementById('qtyValue').textContent = quantity;
+                updateCartTotals(); 
+            }
+        });
+
+        document.getElementById('removeItemBtn').addEventListener('click', () => {
+            localStorage.removeItem('lumo_cart_item');
+            window.location.href = "cart-empty.html"; 
+        });
+    }
+
+    const burgerToggle = document.getElementById("burgerToggle");
+    const navLinks = document.getElementById("navLinks");
+
+    burgerToggle.addEventListener("click", function(e) {
+        e.stopPropagation();
+        burgerToggle.classList.toggle("active");
+        navLinks.classList.toggle("active");
+    });
+
+    document.addEventListener("click", function(event) {
+        if (!burgerToggle.contains(event.target) && !navLinks.contains(event.target)) {
+            burgerToggle.classList.remove("active");
+            navLinks.classList.remove("active");
+        }
+    });
+</script>
+
+</body>
+</html>
